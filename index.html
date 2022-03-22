@@ -1,0 +1,296 @@
+
+<!-- --------------------------------------------------------------------------------><!DOCTYPE html>
+<html>
+  <head>
+    <title>Technical Documentation Page</title>
+    <link rel="icon" href="" type="image/icon type">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/mobile.css">
+    <link rel="stylesheet" href="./css/desktop.css" media="screen and (min-width:800px)">
+  </head>
+</html>
+<body>
+  <nav id="navbar">
+    <header>Arch Linux Installation Guide</header>
+    <ul class="table-contents">
+      <li class="sections"><a class="nav-link" href="#Introduction">Introduction</a></li>
+      <li class="sections"><a class="nav-link" href="#Pre-installation">Pre-installation</a></li>
+      <ul>
+        <li class="subsections"><a href="#Acquire_an_installation_image">Acquire an installation image</a></li>
+        <li class="subsections"><a href="#Verify_signature">Verify signature</a></li>
+        <li class="subsections"><a href="#Prepare_an_installation_medium">Prepare an installation medium</a></li>
+        <li class="subsections"><a href="#Boot_the_live_environment">Boot the live environment</a></li>
+        <li class="subsections"><a href="#Set_the_console_keyboard_layout">Set the console keyboard layout</a></li>
+        <li class="subsections"><a href="#Verify_the_boot_mode">Verify the boot mode</a></li>
+        <li class="subsections"><a href="#Connect_to_the_internet">Connect to the internet</a></li>
+        <li class="subsections"><a href="#Update_the_system_clock">Update the system clock</a></li>
+        <li class="subsections"><a href="#Partition_the_disks">Partition the disks</a></li>
+        <ul>
+          <li class="subsubsections"><a href="#Example_layouts">Example layouts</a></li>
+        </ul>
+        <li class="subsections"><a href="#Format_the_partitions">Format the partitions</a></li>
+        <li class="subsections"><a href="#Mount_the_file_systems">Mount the file systems</a></li>
+        <li class="sections"><a class="nav-link" href="#Installation">Installation</a></li>
+      </ul>
+      <ul>
+        <li class="subsections"><a href="#Select_the_mirrors">Select the mirrors</a></li>
+        <li class="subsections"><a href="#Install_essential_packages">Install essential packages</a></li>
+      </ul>
+      <li class="sections"><a class="nav-link" href="#Configure_the_system">Configure the system</a></li>
+      <ul>
+        <li class="subsections"><a href="#Fstab">Fstab</a></li>
+        <li class="subsections"><a href="#Chroot">Chroot</a></li>
+        <li class="subsections"><a href="#Time_zone">Time zone</a></li>
+        <li class="subsections"><a href="#Localization">Localization</a></li>
+        <li class="subsections"><a href="#Network_configuration">Network configuration</a></li>
+        <li class="subsections"><a href="#Initramfs">Initramfs</a></li>
+        <li class="subsections"><a href="#Root_password">Root password</a></li>
+        <li class="subsections"><a href="#Boot_loader">Boot loader</a></li>
+      </ul>
+      <li class="sections"><a class="nav-link" href="#Reboot">Reboot</a></li>
+      <li class="sections"><a class="nav-link" href="#Post-installation">Post-installation</a></li>
+    </ul>
+  </nav>
+  <main id="main-doc">
+    <section class="main-section" id="Introduction">
+      <header>
+        <h1>Introduction</h1>
+      </header>
+      <p>This document is a guide for installing Arch Linux using the live system booted from an installation medium made from an official installation image. The installation medium provides accessibility features which are described on the page <span class="pseudolink">Install Arch Linux with accessibility options</span>. For alternative means of installation, see <span class="pseudolink">Category:Installation process</span>.</p>
+      <p>Before installing, it would be advised to view the <span class="pseudolink">FAQ</span>. For conventions used in this document, see <span class="pseudolink">Help:Reading</span>. In particular, code examples may contain placeholders (formatted in <span class="pseudocode">italics</span>) that must be replaced manually</p>
+      <p>For more detailed instructions, see the respective <span class="pseudolink">ArchWiki</span> articles or the various programs' <span class="pseudolink">man pages</span>, both linked from this guide. For interactive help, the <span class="pseudolink">IRC channel</span> and the <span class="pseudolink">forums</span> are also available.</p>
+      <p>Arch Linux should run on any <span class="pseudolink">x86_64</span>-compatible machine with a minimum of 512 MiB RAM, though more memory is needed to boot the live system for installation. A basic installation should take less than 2 GiB of disk space. As the installation process needs to retrieve packages from a remote repository, this guide assumes a working internet connection is available.</p>
+    </section>
+    <section class="main-section" id="Pre-installation">
+      <header>
+        <h1>Pre-installation</h1>
+      </header>
+      <h2 id="Acquire_an_installation_image">Acquire an installation image</h2>
+      <p>Visit the <span class="pseudolink">Download</span> page and, depending on how you want to boot, acquire the ISO file or a netboot image, and the respective <span class="pseudolink">GnuPG</span> signature.</p>
+      <h2 id="Verify_signature">Verify signature</h2>
+      <p>It is recommended to verify the image signature before use, especially when downloading from an HTTP mirror, where downloads are generally prone to be intercepted to <span class="pseudolink">serve malicious images</span>.</p>
+      <p>On a system with <span class="pseudolink">GnuPG</span> installed, do this by downloading the PGP signature (under Checksums in the <span class="pseudolink">Download</span> page) to the ISO directory, and <span class="pseudolink">verifying</span> it with:</p><code>$ gpg --keyserver-options auto-key-retrieve --verify archlinux-version-x86_64.iso.sig</code>
+      <p>Alternatively, from an existing Arch Linux installation run:</p><code>$ pacman-key -v archlinux-version-x86_64.iso.sig</code>
+      <div class="note complement-div">
+        <h2>Note:</h2>
+        <ul>
+          <li>The signature itself could be manipulated if it is downloaded from a mirror site, instead of from <span class="pseudolink">archlinux.org</span> as above. In this case, ensure that the public key, which is used to decode the signature, is signed by another, trustworthy key. The <span class="pseudocode">gpg</span> command will output the fingerprint of the public key.</li>
+          <li>Another method to verify the authenticity of the signature is to ensure that the public key's fingerprint is identical to the key fingerprint of the <span class="pseudolink">Arch Linux developer</span> who signed the ISO-file. See <span class="pseudolink">Wikipedia:Public-key cryptography</span> for more information on the public-key process to authenticate keys.</li>
+        </ul>
+      </div>
+      <h2 id="Prepare_an_installation_medium">Prepare an installation medium</h2>
+      <p>The installation image can be supplied to the target machine via a <span class="pseudolink">USB flash drive</span>, an <span class="pseudolink">optical disc</span> or a network with <span class="pseudolink">PXE</span>: follow the appropriate article to prepare yourself an installation medium from the chosen image.</p>
+      <h2 id="Boot_the_live_environment">Boot the live environment</h2>
+      <div class="note complement-div">
+        <p><b>Note</b>: Arch Linux installation images do not support Secure Boot. You will need to <span class="pseudolink">disable Secure Boot</span> to boot the installation medium. If desired, <span class="pseudolink">Secure Boot</span> can be set up after completing the installation.</p>
+      </div>
+      <ol>
+        <li>Point the current boot device to the one which has the Arch Linux installation medium. Typically it is achieved by pressing a key during the <span class="pseudolink">POST</span> phase, as indicated on the splash screen. Refer to your motherboard's manual for details.</li>
+        <li>When the installation medium's boot loader menu appears, select Arch Linux install medium and press <span class="pseudocode">Enter</span> to enter the installation environment.</li>
+        <div class="tip complement-div">
+          <p><b>Tip</b>: The installation image uses <span class="pseudolink">systemd-boot</span> for booting in UEFI mode and <span class="pseudolink">syslinux</span> for booting in BIOS mode. See <span class="pseudolink">README.bootparams</span> for a list of <span class="pseudolink">boot parameters</span>.</p>
+        </div>
+        <li>You will be logged in on the first <span class="pseudolink">virtual console</span> as the root user, and presented with a <span class="pseudolink">Zsh</span> shell prompt.</li>
+      </ol>
+      <p>To switch to a different console—for example, to view this guide with <span class="pseudolink">Lynx</span> alongside the installation—use the <span class="pseudocode">Alt+arrow</span> <span class="pseudolink">shortcut</span>. To edit configuration files, <span class="pseudolink">mcedit(1)</span>, <span class="pseudolink">nano</span> and <span class="pseudolink">vim</span> are available. See <span class="pseudolink">packages.x86_64</span> for a list of the packages included in the installation medium.</p>
+      <h2 id="Set_the_console_keyboard_layout">Set the console keyboard layout</h2>
+      <p>The default <span class="pseudolink">console keymap</span> is <span class="pseudolink">US</span>. Available layouts can be listed with:</p><code># ls /usr/share/kbd/keymaps/**/*.map.gz</code>
+      <p>To set the keyboard layout, pass a corresponding file name to <span class="pseudolink">loadkeys(1)</span>, omitting path and file extension. For example, to set a <span class="pseudolink">German</span> keyboard layout:</p><code># loadkeys de-latin1</code>
+      <p>Console fonts are located in <span class="pseudocode">/usr/share/kbd/consolefonts/</span> and can likewise be set with <span class="pseudolink">setfont(8)</span>.</p>
+      <h2 id="Verify_the_boot_mode">Verify the boot mode</h2>
+      <p>To verify the boot mode, list the <span class="pseudolink">efivars</span> directory:</p><code># ls /sys/firmware/efi/efivars</code>
+      <p>If the command shows the directory without error, then the system is booted in UEFI mode. If the directory does not exist, the system may be booted in <span class="pseudolink">BIOS</span> (or <span class="pseudolink">CSM</span>) mode. If the system did not boot in the mode you desired, refer to your motherboard's manual.</p>
+      <h2 id="Connect_to_the_internet">Connect to the internet</h2>
+      <p>To set up a network connection in the live environment, go through the following steps:</p>
+      <ul>
+        <li>Ensure your <span class="pseudolink">network interface</span> is listed and enabled, for example with <span class="pseudolink">ip-link(8)</span>:</li><code># ip link</code>
+        <li>For wireless and WWAN, make sure the card is not blocked with <span class="pseudolink">rfkill</span>.</li>
+        <li>Connect to the network:
+          <ul>
+            <li>Ethernet—plug in the cable.</li>
+            <li>Wi-Fi—authenticate to the wireless network using <span class="pseudolink">iwctl</span>.</li>
+            <li>Mobile broadband modem—connect to the mobile network with the <span class="pseudolink">mmcli</span> utility.</li>
+          </ul>
+        </li>
+        <li>Configure your network connection:
+          <ul>
+            <li><span class="pseudolink">DHCP</span>: dynamic IP address and DNS server assignment (provided by <span class="pseudolink">systemd-networkd</span> and <span class="pseudolink">systemd-resolved</span>) should work out of the box for Ethernet, WLAN, and WWAN network interfaces.</li>
+            <li>Static IP address: follow <span class="pseudolink">Network configuration#Static IP address</span>.</li>
+          </ul>
+        </li>
+        <li>The connection may be verified with <span class="pseudolink">ping</span>:</li><code># ping archlinux.org</code>
+      </ul>
+      <div class="note complement-div">
+        <p><b>Note</b>: In the installation image, <span class="pseudolink">systemd-networkd</span>, <span class="pseudolink">systemd-resolved</span>, <span class="pseudolink">iwd</span> and <span class="pseudolink">ModemManager</span> are preconfigured and enabled by default. That will not be the case for the installed system.</p>
+      </div>
+      <h2 id="Update_the_system_clock">Update the system clock</h2>
+      <p>Use <span class="pseudolink">timedatectl(1)</span> to ensure the system clock is accurate:</p><code># timedatectl set-ntp true</code>
+      <p>To check the service status, use <span class="pseudocode">timedatectl status</span>.</p>
+      <h2 id="Partition_the_disks">Partition the disks</h2>
+      <p>When recognized by the live system, disks are assigned to a <span class="pseudolink">block device</span> such as <span class="pseudocode">/dev/sda</span>, <span class="pseudocode">/dev/nvme0n1</span> or <span class="pseudocode">/dev/mmcblk0</span>. To identify these devices, use <span class="pseudolink">lsblk</span> or <span class="pseudolink">fdisk</span>.</p><code># fdisk -l</code>
+      <p>Results ending in <span class="pseudocode">rom</span>, <span class="pseudocode">loop</span> or <span class="pseudocode">airoot</span> may be ignored.</p>
+      <p>The following <span class="pseudolink">partitions</span> are required for a chosen device:</p>
+      <ul>
+        <li>One partition for the <span class="pseudolink">root directory</span> <span class="pseudocode">/</span>.</li>
+        <li>For booting in <span class="pseudolink">UEFI</span> mode: an <span class="pseudolink">EFI system partition</span>.</li>
+      </ul>
+      <p>If you want to create any stacked block devices for <span class="pseudolink">LVM, system encryption</span> or <span class="pseudolink">RAID</span>, do it now.</p>
+      <p>Use <span class="pseudolink">fdisk</span> or <span class="pseudolink">parted</span> to modify partition tables. For example:</p><code># fdisk /dev/the_disk_to_be_partitioned</code>
+      <div class="note complement-div">
+        <h2>Note:</h2>
+        <ul>
+          <li>If the disk does not show up, <span class="pseudolink">make sure the disk controller is not in RAID mode</span>.</li>
+          <li>If the disk from which you want to boot <span class="pseudolink">already has an EFI system partition</span>, do not create another one, but use the existing partition instead.</li>
+          <li><span class="pseudolink">Swap</span> space can be set on a <span class="pseudolink">swap file</span> for file systems supporting it.</li>
+        </ul>
+      </div>
+      <h3 id="Example_layouts">Example layouts</h3>
+      <div class="table-container">
+        <table>
+          <caption>UEFI with <span class="pseudolink">GPT</span></caption>
+          <tr>
+            <th>Mount point</th>
+            <th>Partition</th>
+            <th><span class="pseudolink">Partition type</span></th>
+            <th>Suggested size</th>
+          </tr>
+          <tr>
+            <td><span class="pseudocode">/mnt/boot</span></td>
+            <td><span class="pseudocode">/dev/efi_system_partition</span></td>
+            <td><span class="pseudolink">EFI system partition</span></td>
+            <td>At least 300 MiB</td>
+          </tr>
+          <tr>
+            <td><span class="pseudocode">[SWAP]</span></td>
+            <td><span class="pseudocode">/dev/swap_partition</span></td>
+            <td>Linux swap</td>
+            <td>More than 512 MiB</td>
+          </tr>
+          <tr>
+            <td><span class="pseudocode">/mnt</span></td>
+            <td><span class="pseudocode">/dev/root_partition</span></td>
+            <td>Linux x86-64 root (/)</td>
+            <td>Remainder of the device</td>
+          </tr>
+        </table>
+      </div>
+      <ol>
+        <li><span class="pseudolink">Other mount points</span>, such as <span class="pseudocode">/mnt/efi</span>, are possible, provided that the used boot loader is capable of loading the kernel and initramfs images from the root volume. See the warning in <span class="pseudolink">Arch boot process#Boot loader</span>.</li>
+      </ol>
+      <div class="table-container">
+        <table>
+          <caption>BIOS with <span class="pseudolink">MBR</span></caption>
+          <tr>
+            <th>Mount point</th>
+            <th>Partition</th>
+            <th><span class="pseudolink">Partition type</span></th>
+            <th>Suggested size</th>
+          </tr>
+          <tr>
+            <td><span class="pseudocode">[SWAP]</span></td>
+            <td><span class="pseudocode">/dev/swap_partition</span></td>
+            <td>Linux swap</td>
+            <td>More than 512 MiB</td>
+          </tr>
+          <tr>
+            <td><span class="pseudocode">/mnt</span></td>
+            <td><span class="pseudocode">/dev/root_partition</span></td>
+            <td>Linux</td>
+            <td>Remainder of the device</td>
+          </tr>
+        </table>
+      </div>
+      <p>See also <span class="pseudolink">Partitioning#Example layouts</span>.</p>
+      <h2 id="Format_the_partitions">Format the partitions</h2>
+      <p>Once the partitions have been created, each newly created partition must be formatted with an appropriate <span class="pseudolink">file system</span>. See <span class="pseudolink">File systems#Create a file system</span> for details.</p>
+      <p>For example, to create an Ext4 file system on <span class="pseudocode">/dev/root_partition</span>, run:</p><code># mkfs.ext4 /dev/root_partition</code>
+      <p>If you created a partition for <span class="pseudolink">swap</span>, initialize it with <span class="pseudolink">mkswap(8)</span>:</p><code># mkswap /dev/swap_partition</code>
+      <div class="note complement-div">
+        <p>Note: For stacked block devices replace <span class="pseudocode">/dev/*_partition</span> with the appropriate block device path.</p>
+      </div>
+      <p>If you created an EFI system partition, <span class="pseudolink">format it</span> to FAT32 using <span class="pseudolink">mkfs.fat(8)</span>.</p>
+      <div class="warning complement-div">
+        <p>Warning: Only format the EFI system partition if you created it during the partitioning step. If there already was an EFI system partition on disk beforehand, reformatting it can destroy the boot loaders of other installed operating systems.</p>
+      </div><code># mkfs.fat -F 32 /dev/efi_system_partition</code>
+      <h2 id="Mount_the_file_systems">Mount the file systems</h2>
+      <p><span class="pseudolink">Mount</span> the root volume to <span class="pseudocode">/mnt</span>. For example, if the root volume is <span class="pseudocode">/dev/root_partition</span>:</p><code># mount /dev/root_partition /mnt</code>
+      <p>Create any remaining mount points (such as <span class="pseudocode">/mnt/efi</span>) using <span class="pseudolink">mkdir(1)</span> and mount their corresponding volumes.</p>
+      <p>For UEFI systems, mount the EFI system partition:</p><code># mount /dev/efi_system_partition /mnt/boot</code>
+      <p>If you created a <span class="pseudolink">swap</span> volume, enable it with <span class="pseudolink">swapon(8)</span>:</p><code># swapon /dev/swap_partition</code>
+      <p><span class="pseudolink">genfstab(8)</span> will later detect mounted file systems and swap space.</p>
+    </section>
+    <section class="main-section" id="Installation">
+      <header>
+        <h1>Installation</h1>
+      </header>
+      <h2 id="Select_the_mirrors">Select the mirrors</h2>
+      <p>Packages to be installed must be downloaded from <span class="pseudolink">mirror servers</span>, which are defined in <span class="pseudocode">/etc/pacman.d/mirrorlist</span>. On the live system, after connecting to the internet, <span class="pseudolink">reflector</span> updates the mirror list by choosing 20 most recently synchronized HTTPS mirrors and sorting them by download rate.</p>
+      <p>The higher a mirror is placed in the list, the more priority it is given when downloading a package. You may want to inspect the file to see if it is satisfactory. If it is not, edit the file accordingly, and move the geographically closest mirrors to the top of the list, although other criteria should be taken into account.</p>
+      <p>This file will later be copied to the new system by pacstrap, so it is worth getting right.</p>
+      <h2 id="Install_essential_packages">Install essential packages</h2>
+      <p>Use the <span class="pseudolink">pacstrap(8)</span> script to install the <span class="pseudolink">base</span> package, Linux <span class="pseudolink">kernel</span> and firmware for common hardware:</p><code># pacstrap /mnt base linux linux-firmware</code>
+      <div class="tip complement-div">
+        <h2>Tip:</h2>
+        <ul>
+          <li>You can substitute <span class="pseudolink">linux</span> for a <span class="pseudolink">kernel</span> package of your choice, or you could omit it entirely when installing in a <span class="pseudolink">container</span>.</li>
+          <li>You could omit the installation of the firmware package when installing in a virtual machine or container.</li>
+        </ul>
+      </div>
+      <p>The <span class="pseudolink">base</span> package does not include all tools from the live installation, so installing other packages may be necessary for a fully functional base system. In particular, consider installing:</p>
+      <ul>
+        <li>userspace utilities for the management of <span class="pseudolink">file systems</span> that will be used on the system,</li>
+        <li>utilities for accessing <span class="pseudolink">RAID</span> or <span class="pseudolink">LVM</span> partitions,</li>
+        <li>specific firmware for other devices not included in <span class="pseudolink">linux-firmware</span> (e.g. <span class="pseudolink">sof-firmware</span> for <span class="pseudolink">sound cards</span>),</li>
+        <li>software necessary for <span class="pseudolink">networking</span> (e.g. a network manager or DHCP client),</li>
+        <li>a <span class="pseudolink">text editor</span>,</li>
+        <li>packages for accessing documentation in <span class="pseudolink">man</span> and <span class="pseudolink">info</span> pages: <span class="pseudolink">man-db</span>, <span class="pseudolink">man-pages</span> and <span class="pseudolink">texinfo</span>.</li>
+      </ul>
+      <p>To <span class="pseudolink">install</span> other packages or package groups, append the names to the pacstrap command above (space separated) or use <span class="pseudolink">pacman</span> while <span class="pseudolink">chrooted into the new system</span>. For comparison, packages available in the live system can be found in <span class="pseudolink">packages.x86_64</span>.</p>
+    </section>
+    <section class="main-section" id="Configure_the_system">
+      <header>
+        <h1>Configure the system</h1>
+      </header>
+      <h2 id="Fstab">Fstab</h2>
+      <p>Generate an <span class="pseudolink">fstab</span> file (use <span class="pseudocode">-U</span> or <span class="pseudocode">-L</span> to define by <span class="pseudolink">UUID</span> or labels, respectively):</p><code># genfstab -U /mnt >> /mnt/etc/fstab</code>
+      <p>Check the resulting <span class="pseudocode">/mnt/etc/fstab</span> file, and edit it in case of errors.</p>
+      <h2 id="Chroot">Chroot</h2>
+      <p><span class="pseudolink">Change root</span> into the new system:</p><code># arch-chroot /mnt</code>
+      <h2 id="Time_zone">Time zone</h2>
+      <p>Set the <span class="pseudolink">time zone</span>:</p><code># ln -sf /usr/share/zoneinfo/Region/City /etc/localtime</code>
+      <p>Run <span class="pseudolink">hwclock(8)</span> to generate <span class="pseudocode">/etc/adjtime</span>:</p><code># hwclock --systohc</code>
+      <p>This command assumes the hardware clock is set to <span class="pseudolink">UTC</span>. See <span class="pseudolink">System time#Time standard</span> for details.</p>
+      <h2 id="Localization">Localization</h2>
+      <p>Edit <span class="pseudocode">/etc/locale.gen</span> and uncomment <span class="pseudocode">en_US.UTF-8 UTF-8</span> and other needed locales. Generate the locales by running:</p><code># locale-gen</code>
+      <p><span class="pseudolink">Create</span> the <span class="pseudolink">locale.conf(5)</span> file, and <span class="pseudolink">set the LANG variable accordingly</span>:</p><code>/etc/locale.conf</code><code>LANG=en_US.UTF-8</code>
+      <p>If you <span class="pseudolink">set the console keyboard layout</span>, make the changes persistent in <span class="pseudolink">vconsole.conf(5)</span>:</p><code>/etc/vconsole.conf</code><code>KEYMAP=de-latin1</code>
+      <h2 id="Network_configuration">Network configuration</h2>
+      <p><span class="pseudolink">Create</span> the <span class="pseudolink">hostname</span> file:</p><code>/etc/hostname</code><code>myhostname</code>
+      <p>Complete the <span class="pseudolink">network configuration</span> for the newly installed environment. That may include installing suitable <span class="pseudolink">network management</span> software.</p>
+      <h2 id="Initramfs">Initramfs</h2>
+      <p>Creating a new initramfs is usually not required, because <span class="pseudolink">mkinitcpio</span> was run on installation of the <span class="pseudolink">kernel</span> package with pacstrap.</p>
+      <p>For <span class="pseudolink">LVM</span>, <span class="pseudolink">system encryption</span> or <span class="pseudolink">RAID</span>, modify <span class="pseudolink">mkinitcpio.conf(5)</span> and recreate the initramfs image:</p><code># mkinitcpio -P</code>
+      <h2 id="Root_password">Root password</h2>
+      <p>Set the root <span class="pseudolink">password</span>:</p><code># passwd</code>
+      <h2 id="Boot_loader">Boot loader</h2>
+      <p>Choose and install a Linux-capable <span class="pseudolink">boot loader</span>. If you have an Intel or AMD CPU, enable <span class="pseudolink">microcode</span> updates in addition.</p>
+    </section>
+    <section class="main-section" id="Reboot">
+      <header>
+        <h1>Reboot</h1>
+      </header>
+      <p>Exit the chroot environment by typing <span class="pseudocode">exit</span> or pressing <span class="pseudocode">Ctrl+d</span>.</p>
+      <p>Optionally manually unmount all the partitions with <span class="pseudocode">umount -R /mnt</span>: this allows noticing any "busy" partitions, and finding the cause with <span class="pseudolink">fuser(1)</span>.</p>
+      <p>Finally, restart the machine by typing <span class="pseudocode">reboot</span>: any partitions still mounted will be automatically unmounted by systemd. Remember to remove the installation medium and then login into the new system with the root account.</p>
+    </section>
+    <section class="main-section" id="Post-installation">
+      <header>
+        <h1>Post-installation</h1>
+      </header>
+      <p>See <span class="pseudolink">General recommendations</span> for system management directions and post-installation tutorials (like creating unprivileged user accounts, setting up a graphical user interface, sound or a touchpad).</p>
+      <p>For a list of applications that may be of interest, see <span class="pseudolink">List of applications</span>.</p>
+    </section>
+  </main>
+  <script src="https://cdn.freecodecamp.org/testable-projects-fcc/v1/bundle.js"></script>
+</body>
